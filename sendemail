@@ -1,0 +1,29 @@
+name: Notify on Power BI Report Change
+ 
+on:
+  push:
+    paths:
+      - '**/*.pbix'   # Watch for changes in .pbix files
+ 
+jobs:
+  notify:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v2
+ 
+      - name: Send Email Notification
+        env:
+          SMTP_SERVER: 172.25.0.28
+          SMTP_PORT: 25
+          SMTP_USERNAME: 
+          SMTP_PASSWORD: 
+          TO_EMAIL: it-support@advansor.com
+          FROM_EMAIL: noreply@advansor.com
+        run: |
+          echo "Sending email notification about PBIX file change"
+          curl -X POST "https://api.mailgun.net/v3/YOUR_DOMAIN_NAME/messages" \
+          -F from="Excited User <mailgun@YOUR_DOMAIN_NAME>" \
+          -F to=$TO_EMAIL \
+          -F subject="Power BI Report Changed" \
+          -F text="A Power BI report has been updated in the repository."
